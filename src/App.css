@@ -1,0 +1,144 @@
+:root {
+  --text-50: #f1eafa;
+--text-100: #e4d6f5;
+--text-200: #c9adeb;
+--text-300: #ae84e1;
+--text-400: #935bd7;
+--text-500: #7832cd;
+--text-600: #6028a4;
+--text-700: #481e7b;
+--text-800: #301452;
+--text-900: #180a29;
+--text-950: #0c0515;
+
+--background-50: #f2eafb;
+--background-100: #e5d5f6;
+--background-200: #cbaaee;
+--background-300: #b180e5;
+--background-400: #9756dc;
+--background-500: #7d2bd4;
+--background-600: #6423a9;
+--background-700: #4b1a7f;
+--background-800: #321155;
+--background-900: #19092a;
+--background-950: #0c0415;
+
+--primary-50: #f3eafa;
+--primary-100: #e7d5f6;
+--primary-200: #ceacec;
+--primary-300: #b682e3;
+--primary-400: #9d59d9;
+--primary-500: #852fd0;
+--primary-600: #6a26a6;
+--primary-700: #501c7d;
+--primary-800: #351353;
+--primary-900: #1b092a;
+--primary-950: #0d0515;
+
+--secondary-50: #fbeaf4;
+--secondary-100: #f6d5e9;
+--secondary-200: #edabd3;
+--secondary-300: #e481bc;
+--secondary-400: #db57a6;
+--secondary-500: #d22d90;
+--secondary-600: #a82473;
+--secondary-700: #7e1b56;
+--secondary-800: #54123a;
+--secondary-900: #2a091d;
+--secondary-950: #15040e;
+
+--accent-50: #fbeaf0;
+--accent-100: #f6d5e2;
+--accent-200: #edabc4;
+--accent-300: #e481a7;
+--accent-400: #db578a;
+--accent-500: #d22d6c;
+--accent-600: #a82457;
+--accent-700: #7e1b41;
+--accent-800: #54122b;
+--accent-900: #2a0916;
+--accent-950: #15040b;
+
+--text: #ECE2F8;
+--background: #140722;
+--primary: #B682E3;
+--secondary: #7E1B56;
+--accent: #D3316F;
+
+--primary-overlay: #b682e37b;
+
+}
+
+body {
+  margin: 0;
+  background-color: var(--background);
+}
+
+.container {
+  padding: 1rem;
+
+}
+
+.overlay-color {
+  background-color: var(--primary-overlay);
+}
+
+button {
+  margin: 0;
+  background-color: var(--primary);
+  color: var(--text-900);
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: default;
+  transition-duration: 0.1s;  
+  border-radius: 0.25rem;
+}
+
+
+button:hover {
+  background-color: var(--accent);
+  color: var(--text);
+}
+
+* {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+.horizontal-flex {
+  display: flex;
+  flex-direction: row;
+}
+
+.vertical-flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.rounded-025 {
+  border-radius: 0.25rem;
+}
+
+.appbar-child {
+  margin-left: 1rem;
+}
+
+.height-2 {
+  height: 2rem;
+}
+
+.margin-left-025 {
+  margin-left: 0.25rem;
+}
+
+.padding-025 {
+  padding: 0.25rem;
+}
+
+canvas {
+  width: 512px;
+  height: 512px;
+}
