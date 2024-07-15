@@ -1,5 +1,5 @@
 import colorsea from "colorsea";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "./button";
 import { invoke } from "@tauri-apps/api";
 

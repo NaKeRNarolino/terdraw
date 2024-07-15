@@ -1,16 +1,14 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
-import { Container } from "./components/utility";
 import { AppBar } from "./components/appbar";
 import { Canvas } from "./components/canvas";
+import { Toolbar } from "./components/toolbar";
 
 function App() {
   return (
     <div className="App">
       <AppBar />
       <Canvas />
+      <Toolbar />
     </div>
   );
 }

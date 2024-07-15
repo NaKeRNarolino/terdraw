@@ -1,3 +1,11 @@
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24;
+}
+
 :root {
   --text-50: #f1eafa;
 --text-100: #e4d6f5;
@@ -92,6 +100,8 @@ button {
   cursor: default;
   transition-duration: 0.1s;  
   border-radius: 0.25rem;
+  font-weight: 700;
+  box-shadow: var(--text-900) 0px 0px 5px;
 }
 
 
@@ -131,7 +141,7 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 .margin-left-025 {
-  margin-left: 0.25rem;
+  margin-left: 0.25rem!important;
 }
 
 .padding-025 {
@@ -141,4 +151,23 @@ p, h1, h2, h3, h4, h5, h6 {
 canvas {
   width: 512px;
   height: 512px;
+}
+
+#toolbar {
+  width: 12rem;
+  position: absolute;
+  bottom: 1rem;
+  left: calc(50% - 12rem / 2);
+  height: max-content;
+}
+
+.toolbar-button {
+  width: 4rem;
+  height: 4rem;
+  margin: 0;
+}
+
+
+.margin-left-1 {
+  margin-left: 1rem!important;
 }
