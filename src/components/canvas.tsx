@@ -1,14 +1,16 @@
-import colorsea from "colorsea";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./button";
 import { invoke } from "@tauri-apps/api";
+import { DrawTool, ToolTypes, ToolRepository, EraserTool } from "../tools/mod";
+import { DisplayCanvas } from "./displayCanvas";
+import { UserProps } from "../user/singleton";
+import { Container } from "./utility";
 
 export const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [isDrawing, setIsDrawing] = useState(false);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
-  const [color, setColor] = useState<string>("#ffffff");
   const [URLPATH, setURLPATH] = useState("/");
 
   useEffect(() => {
@@ -23,52 +25,33 @@ export const Canvas = () => {
 
   const startDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const { offsetX, offsetY } = event.nativeEvent;
+
     if (context) {
       context.beginPath();
       context.moveTo(offsetX, offsetY);
     }
     setIsDrawing(true);
+    UserProps.I.isDrawing = true;
   };
 
   const draw = (event: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing || !context) {
       return;
     }
+    setURLPATH(ToolRepository.getCurrentTool().toString());
     const { offsetX, offsetY } = event.nativeEvent;
-    const lineWidth = 60;
 
-    const gradient = context.createRadialGradient(
-      offsetX,
-      offsetY,
-      lineWidth / 2,
-      offsetX,
-      offsetY,
-      0
-    );
-
-    const finalColorRGBA = colorsea(color).rgba();
-    const finalColor = colorsea([
-      finalColorRGBA[0],
-      finalColorRGBA[1],
-      finalColorRGBA[2],
-      finalColorRGBA[3] - 99,
-    ]).hex();
-    gradient.addColorStop(0, `${color}00`);
-    gradient.addColorStop(1, finalColor);
-
-    context.fillStyle = gradient;
-    context.strokeStyle = gradient;
-    context.lineWidth = lineWidth;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-
-    context.lineTo(offsetX, offsetY);
-    context.stroke();
-    context.beginPath();
-    // context.arc(offsetX, offsetY, lineWidth / 2, 0, Math.PI * 2);
-    context.fill();
-    context.beginPath();
-    context.moveTo(offsetX, offsetY);
+    UserProps.I.drawingOffset = { x: offsetX, y: offsetY };
+    switch (ToolRepository.getCurrentTool()) {
+      case ToolTypes.Draw: {
+        DrawTool(event, context);
+        break;
+      }
+      case ToolTypes.Eraser: {
+        EraserTool(event, context);
+        break;
+      }
+    }
   };
 
   const stopDrawing = () => {
@@ -76,6 +59,7 @@ export const Canvas = () => {
       context.closePath();
     }
     setIsDrawing(false);
+    UserProps.I.isDrawing = false;
   };
 
   const saveImage = () => {
@@ -85,21 +69,20 @@ export const Canvas = () => {
   };
 
   return (
-    <>
+    <Container
+      className="horizontal-flex overlay-color rounded-025"
+      id="canvas-container"
+    >
       <canvas
         ref={canvasRef}
         height={"512"}
         width={"512"}
-        style={{ border: "1px solid black" }}
         onMouseDown={startDrawing}
         onMouseUp={stopDrawing}
         onMouseMove={draw}
         onMouseLeave={stopDrawing}
       ></canvas>
-      <Button onClick={saveImage}>
-        <p>Save</p>
-      </Button>
-      <p>{URLPATH}</p>
-    </>
+      <DisplayCanvas heightmapContext={context!}></DisplayCanvas>
+    </Container>
   );
 };

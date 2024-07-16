@@ -105,9 +105,9 @@ button {
 }
 
 
-button:hover {
-  background-color: var(--accent);
-  color: var(--text);
+button:hover, button.selected {
+  background-color: var(--accent)!important;
+  color: var(--text)!important;
 }
 
 * {
@@ -170,4 +170,24 @@ canvas {
 
 .margin-left-1 {
   margin-left: 1rem!important;
+}
+
+#canvas-container {
+  max-width: max-content;
+  margin-top: 4rem;
+}
+
+#display-canvas {
+  margin-left: 0.25rem;
+}
+
+.center-contents {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+canvas {
+  border: var(--primary) 4px solid;
+  border-radius: 0.25rem;
 }

@@ -12,15 +12,17 @@ export class ToolRepository {
   }
 
   static get I(): ToolRepository {
-    if (!ToolRepository.instance) throw new Error("Repository not created.");
+    if (!ToolRepository.instance) {
+      ToolRepository.instance = new ToolRepository();
+    }
     return ToolRepository.instance;
   }
 
-  public setCurrentTool(tool: ToolTypes): void {
-    this.currentTool = tool;
+  public static setCurrentTool(tool: ToolTypes): void {
+    this.instance!.currentTool = tool;
   }
 
-  public getCurrentTool(): ToolTypes {
-    return this.currentTool;
+  public static getCurrentTool(): ToolTypes {
+    return this.instance!.currentTool;
   }
 }
