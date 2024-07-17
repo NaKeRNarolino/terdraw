@@ -3,9 +3,11 @@ import { Ref, RefObject, useEffect, useRef, useState } from "react";
 import { UserProps } from "../user/singleton";
 
 export const DisplayCanvas = ({
-  heightmapContext,
+  heightmap,
+  material,
 }: {
-  heightmapContext: CanvasRenderingContext2D;
+  heightmap: HTMLImageElement;
+  material: HTMLImageElement;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -23,8 +25,10 @@ export const DisplayCanvas = ({
 
   setTimeout(() => {
     context?.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    context!.globalCompositeOperation = "source-over";
+    context?.drawImage(material, 0, 0);
     context!.globalCompositeOperation = "lighten";
-    context?.drawImage(heightmapContext.canvas, 0, 0);
+    context?.drawImage(heightmap, 0, 0);
     context!.globalCompositeOperation = "source-over";
   }, 100);
 

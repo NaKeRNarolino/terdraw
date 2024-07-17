@@ -5,13 +5,21 @@ import { DrawTool, ToolTypes, ToolRepository, EraserTool } from "../tools/mod";
 import { DisplayCanvas } from "./displayCanvas";
 import { UserProps } from "../user/singleton";
 import { Container } from "./utility";
+import { CanvasLayer } from "../layer/models";
 
-export const Canvas = () => {
+export const Canvas = ({ _selectedLayer }: { _selectedLayer: CanvasLayer }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [isDrawing, setIsDrawing] = useState(false);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const [URLPATH, setURLPATH] = useState("/");
+  const [selectedLayer, setSelectedLayer] = useState(CanvasLayer.Heightmap);
+  const [heightmapLayer, setHeightmapLayer] = useState<HTMLImageElement | null>(
+    null
+  );
+  const [materialLayer, setMaterialLayer] = useState<HTMLImageElement | null>(
+    null
+  );
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -20,6 +28,10 @@ export const Canvas = () => {
       setContext(ctx);
       ctx!.fillStyle = "#000000";
       ctx?.fillRect(0, 0, canvas.width, canvas.height);
+      const img = new Image();
+      img.src = canvas.toDataURL();
+      setHeightmapLayer(img);
+      setMaterialLayer(img);
     }
   }, []);
 
@@ -52,6 +64,14 @@ export const Canvas = () => {
         break;
       }
     }
+
+    const img = new Image();
+    img.src = context.canvas.toDataURL();
+    if (selectedLayer == CanvasLayer.Heightmap) {
+      setHeightmapLayer(img);
+    } else if (selectedLayer == CanvasLayer.Material) {
+      setMaterialLayer(img);
+    }
   };
 
   const stopDrawing = () => {
@@ -68,6 +88,19 @@ export const Canvas = () => {
     invoke("export", { image: url });
   };
 
+  const switchLayer = () => {
+    const layer =
+      selectedLayer == CanvasLayer.Heightmap
+        ? CanvasLayer.Material
+        : CanvasLayer.Heightmap;
+    setSelectedLayer(layer);
+    context?.drawImage(
+      layer == CanvasLayer.Material ? materialLayer! : heightmapLayer!,
+      0,
+      0
+    );
+  };
+
   return (
     <Container
       className="horizontal-flex overlay-color rounded-025"
@@ -82,7 +115,17 @@ export const Canvas = () => {
         onMouseMove={draw}
         onMouseLeave={stopDrawing}
       ></canvas>
-      <DisplayCanvas heightmapContext={context!}></DisplayCanvas>
+      <DisplayCanvas
+        heightmap={heightmapLayer!}
+        material={materialLayer!}
+      ></DisplayCanvas>
+      <Button
+        onClick={() => {
+          switchLayer();
+        }}
+      >
+        <p>switch</p>
+      </Button>
     </Container>
   );
 };
