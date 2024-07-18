@@ -1,18 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./button";
-import { invoke } from "@tauri-apps/api";
+import { event, invoke } from "@tauri-apps/api";
 import { DrawTool, ToolTypes, ToolRepository, EraserTool } from "../tools/mod";
 import { DisplayCanvas } from "./displayCanvas";
 import { UserProps } from "../user/singleton";
 import { Container } from "./utility";
 import { CanvasLayer } from "../layer/models";
 
-export const Canvas = ({ _selectedLayer }: { _selectedLayer: CanvasLayer }) => {
+export const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [isDrawing, setIsDrawing] = useState(false);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
-  const [URLPATH, setURLPATH] = useState("/");
   const [selectedLayer, setSelectedLayer] = useState(CanvasLayer.Heightmap);
   const [heightmapLayer, setHeightmapLayer] = useState<HTMLImageElement | null>(
     null
@@ -44,13 +43,16 @@ export const Canvas = ({ _selectedLayer }: { _selectedLayer: CanvasLayer }) => {
     }
     setIsDrawing(true);
     UserProps.I.isDrawing = true;
+    draw(event, true);
   };
 
-  const draw = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || !context) {
+  const draw = (
+    event: React.MouseEvent<HTMLCanvasElement>,
+    ignoreIsDrawing: boolean
+  ) => {
+    if ((!isDrawing && !ignoreIsDrawing) || !context) {
       return;
     }
-    setURLPATH(ToolRepository.getCurrentTool().toString());
     const { offsetX, offsetY } = event.nativeEvent;
 
     UserProps.I.drawingOffset = { x: offsetX, y: offsetY };
@@ -84,7 +86,6 @@ export const Canvas = ({ _selectedLayer }: { _selectedLayer: CanvasLayer }) => {
 
   const saveImage = () => {
     const url = canvasRef!.current!.toDataURL("image/png");
-    setURLPATH(url);
     invoke("export", { image: url });
   };
 
@@ -101,31 +102,47 @@ export const Canvas = ({ _selectedLayer }: { _selectedLayer: CanvasLayer }) => {
     );
   };
 
+  const getLocaledSelectedLayer = (layer: CanvasLayer) => {
+    switch (layer) {
+      case CanvasLayer.Heightmap: {
+        return "Heightmap";
+      }
+      case CanvasLayer.Material: {
+        return "Material";
+      }
+    }
+  };
+
   return (
     <Container
       className="horizontal-flex overlay-color rounded-025"
       id="canvas-container"
     >
-      <canvas
-        ref={canvasRef}
-        height={"512"}
-        width={"512"}
-        onMouseDown={startDrawing}
-        onMouseUp={stopDrawing}
-        onMouseMove={draw}
-        onMouseLeave={stopDrawing}
-      ></canvas>
-      <DisplayCanvas
-        heightmap={heightmapLayer!}
-        material={materialLayer!}
-      ></DisplayCanvas>
-      <Button
-        onClick={() => {
-          switchLayer();
-        }}
-      >
-        <p>switch</p>
-      </Button>
+      <div className="vertical-flex">
+        <div className="horizontal-flex">
+          <canvas
+            ref={canvasRef}
+            height={"512"}
+            width={"512"}
+            onMouseDown={startDrawing}
+            onMouseUp={stopDrawing}
+            onMouseMove={(ev) => draw(ev, false)}
+            onMouseLeave={stopDrawing}
+          ></canvas>
+          <DisplayCanvas
+            heightmap={heightmapLayer!}
+            material={materialLayer!}
+          ></DisplayCanvas>
+        </div>
+        <Button
+          onClick={() => {
+            switchLayer();
+          }}
+          className="margin-top-025"
+        >
+          <p>Current Layer: {getLocaledSelectedLayer(selectedLayer)}</p>
+        </Button>
+      </div>
     </Container>
   );
 };

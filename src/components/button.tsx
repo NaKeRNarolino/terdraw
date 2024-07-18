@@ -5,7 +5,7 @@ export const Button = ({
   className,
   selected,
 }: {
-  children: JSX.Element;
+  children: JSX.Element | JSX.Element[];
   onClick: () => void;
   id?: string;
   className?: string;

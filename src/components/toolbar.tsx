@@ -4,11 +4,6 @@ import { Button } from "./button";
 import { Container } from "./utility";
 import { ToolTypes as ToolTypes } from "../tools/models";
 
-function getToolProperties() {
-  // TODO
-  return <></>;
-}
-
 export const Toolbar = () => {
   const [selectedTool, setSelectedTool] = useState(
     ToolRepository.getCurrentTool()

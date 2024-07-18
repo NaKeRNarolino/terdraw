@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@tanstack/react-query':
+        specifier: ^5.51.5
+        version: 5.51.5(react@18.3.1)
       '@tauri-apps/api':
         specifier: ^1
         version: 1.6.0
@@ -384,6 +387,14 @@ packages:
     resolution: {integrity: sha512-yjk2MAkQmoaPYCSu35RLJ62+dz358nE83VfTePJRp8CG7aMg25mEJYpXFiD+NcevhX8LxD5OP5tktPXnXN7GDw==}
     cpu: [x64]
     os: [win32]
+
+  '@tanstack/query-core@5.51.5':
+    resolution: {integrity: sha512-qovOto6hFet2zA4Pf3cDO+qkOqskO6xP39PlKnr6YKPtjRsePWyZnTaMf59+VnlOLY8gpku1I4WPC4dqBXo4FQ==}
+
+  '@tanstack/react-query@5.51.5':
+    resolution: {integrity: sha512-jaYYPGF55HT3DSV2NxFHa7zGRUm6LiRENw1rspkzqNiOU93umP5YCdE/l4S61/ZdLnjzwYIM4FU96EQt+imq5Q==}
+    peerDependencies:
+      react: ^18.0.0
 
   '@tauri-apps/api@1.6.0':
     resolution: {integrity: sha512-rqI++FWClU5I2UBp4HXFvl+sBWkdigBkxnpJDQUWttNyG7IZP4FwQGhTNL5EOw0vI8i6eSAJ5frLqO7n7jbJdg==}
@@ -959,6 +970,13 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.18.1':
     optional: true
+
+  '@tanstack/query-core@5.51.5': {}
+
+  '@tanstack/react-query@5.51.5(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.51.5
+      react: 18.3.1
 
   '@tauri-apps/api@1.6.0': {}
 

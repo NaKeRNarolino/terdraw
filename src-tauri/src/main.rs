@@ -2,7 +2,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::{
-    fs::File,
+    fmt::format,
+    fs::{self, File},
     io::Write,
     path::{self, Path, PathBuf},
 };
@@ -26,9 +27,28 @@ fn export(image: &str) {
     }
 }
 
+#[tauri::command]
+async fn read_images(path: &str) -> Result<Vec<String>, String> {
+    let mut files: Vec<String> = vec![];
+
+    for dir_entry in fs::read_dir(format!("../public/{path}")).unwrap() {
+        let entry_final = dir_entry.unwrap();
+        files.push(
+            entry_final
+                .path()
+                .to_str()
+                .to_owned()
+                .unwrap_or("")
+                .to_string(),
+        );
+    }
+
+    Ok(files)
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![export])
+        .invoke_handler(tauri::generate_handler![export, read_images])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

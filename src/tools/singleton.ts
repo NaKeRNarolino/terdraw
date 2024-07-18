@@ -1,3 +1,4 @@
+import { ToolEvents } from "./mod";
 import { ToolTypes } from "./models";
 
 export class ToolRepository {
@@ -19,6 +20,10 @@ export class ToolRepository {
   }
 
   public static setCurrentTool(tool: ToolTypes): void {
+    ToolEvents.toolChange.fire({
+      first: this.instance!.currentTool,
+      second: tool,
+    });
     this.instance!.currentTool = tool;
   }
 
