@@ -1,1 +1,1 @@
-# Terdraw is the next WorldPainter
+# Terdraw
