@@ -1,3 +1,4 @@
+import { UserEvents } from "../user/mod";
 import { Button } from "./button";
 import { PropertyBar } from "./propertyBar";
 import { Container } from "./utility";
@@ -9,8 +10,12 @@ export const AppBar = () => {
       id="appbar"
     >
       <Container className="overlay-color horizontal-flex rounded-025 height-4 padding-025">
-        <Button onClick={() => {}}>
-          <p>File</p>
+        <Button
+          onClick={() => {
+            UserEvents.exportEvent.fire();
+          }}
+        >
+          <p>File {">"} Export</p>
         </Button>
         <Button onClick={() => {}} className="margin-left-025">
           <p>Tools & Settings</p>

@@ -15,8 +15,26 @@ export class EventNotifier<T> {
   }
 
   fire = (data: T): void => {
-    this.listeners.forEach((subscriber) => {
-      subscriber(data);
+    this.listeners.forEach((listener) => {
+      listener(data);
+    });
+  };
+}
+
+export class IdifiedEventNotifier<T> {
+  private listeners: Map<string, (data: T) => void> = new Map();
+
+  listen(listener: (data: T) => void, id: string): void {
+    this.listeners.set(id, listener);
+  }
+
+  removeListener(id: string): void {
+    this.listeners.delete(id);
+  }
+
+  fire = (data: T): void => {
+    this.listeners.forEach((listener) => {
+      listener(data);
     });
   };
 }

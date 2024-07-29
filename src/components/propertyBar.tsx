@@ -20,6 +20,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { UserProps } from "../user/singleton";
+import { builtInMaterials } from "../user/materials";
 
 const PropertyList: Record<ToolTypes, Property[]> = {
   [ToolTypes.Draw]: DrawToolProperties,
@@ -37,19 +38,15 @@ export const PropertyBar = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Container className="overlay-color horizontal-flex only-horizontal-padding margin-left-025">
+      <Container className="overlay-color horizontal-flex only-horizontal-padding margin-left-025 rounded-025">
         {toolProperties.map((property) => {
           if (property.type == PropertyType.Numeric) {
             return <NumericProperty property={property} />;
           } else if (property.type == PropertyType.ImageProperty) {
             return <ImageProperty property={property} />;
+          } else {
+            return <MaterialProperty property={property} />;
           }
-          return (
-            <div className="property-container">
-              <p>{property.name}</p>
-              <input type="text" value={property.value} />
-            </div>
-          );
         })}
       </Container>
     </QueryClientProvider>
@@ -155,6 +152,47 @@ const ImageProperty = ({ property }: { property: Property }) => {
           })}
         </div>
       </Dialog>
+    </>
+  );
+};
+
+const MaterialProperty = ({ property }: { property: Property }) => {
+  const [value, setValue] = useState(property.default);
+
+  UserProps.I.properties[property.id] = value;
+
+  const getContent = () => {
+    return (
+      <div className="horizontal-flex">
+        {builtInMaterials.map((mat) => (
+          <Button
+            onClick={() => {
+              setValue(mat.color);
+              UserProps.I.properties[property.id] = value;
+            }}
+            className="property-btn margin-left-025"
+          >
+            <div
+              style={{
+                width: "1rem",
+                height: "1rem",
+                backgroundColor: mat.color,
+                margin: "0!important",
+                padding: "0",
+              }}
+            ></div>
+          </Button>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <Container className="horizontal-flex property-container center-contents only-horizontal-padding">
+        <p>{property.name}</p>
+        {getContent()}
+      </Container>
     </>
   );
 };

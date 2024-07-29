@@ -59,7 +59,7 @@ export const DrawToolProperties: Property[] = [
     name: "Material",
     type: PropertyType.MaterialProperty,
     additionalProperties: {},
-    default: "minecraft:grass",
+    default: "#ffffff",
   },
 ];
 

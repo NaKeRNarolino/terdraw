@@ -8,22 +8,56 @@ use std::{
     path::{self, Path, PathBuf},
 };
 
-#[tauri::command]
-fn export(image: &str) {
-    let base64_data = image.trim_start_matches("data:image/png;base64,");
+use image::generate_jsons;
 
-    match base64::decode(base64_data) {
+pub mod image;
+
+#[tauri::command]
+fn export(material: &str, heightmap: &str, material_dictionary: &str) {
+    let base64_data_material = material.trim_start_matches("data:image/png;base64,");
+    let hmcopy = heightmap.to_owned();
+    let mdcopy = material_dictionary.to_owned();
+
+    println!("{}", hmcopy.clone());
+    match base64::decode(base64_data_material) {
         Ok(image_data) => {
-            let pathres = tauri::api::dialog::FileDialogBuilder::new()
+            let _pathres = tauri::api::dialog::FileDialogBuilder::new()
                 .set_directory("/")
                 .pick_folder(move |path| {
-                    let file_path = format!("{}/heightmap.png", path.unwrap().to_string_lossy());
+                    let file_path =
+                        format!("{}/material.png", path.clone().unwrap().to_string_lossy());
                     let mut file = File::create(file_path).map_err(|e| e.to_string()).unwrap();
                     file.write_all(&image_data).map_err(|e| e.to_string());
-                    println!("folder");
+
+                    let base64_data_heightmap = hmcopy.trim_start_matches("data:image/png;base64,");
+                    match base64::decode(base64_data_heightmap) {
+                        Ok(image_data) => {
+                            let file_path = format!(
+                                "{}/heightmap.png",
+                                path.clone().unwrap().to_string_lossy()
+                            );
+                            let mut file =
+                                File::create(file_path).map_err(|e| e.to_string()).unwrap();
+                            file.write_all(&image_data).map_err(|e| e.to_string());
+                            generate_jsons(
+                                format!("{}/material.png", path.clone().unwrap().to_string_lossy())
+                                    .as_str()
+                                    .into(),
+                                format!(
+                                    "{}/heightmap.png",
+                                    path.clone().unwrap().to_string_lossy()
+                                )
+                                .as_str()
+                                .into(),
+                                mdcopy.as_str(),
+                                path,
+                            )
+                        }
+                        Err(_) => (),
+                    }
                 });
         }
-        Err(e) => (),
+        Err(_) => (),
     }
 }
 

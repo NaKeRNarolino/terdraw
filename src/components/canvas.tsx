@@ -6,6 +6,8 @@ import { DisplayCanvas } from "./displayCanvas";
 import { UserProps } from "../user/singleton";
 import { Container } from "./utility";
 import { CanvasLayer } from "../layer/models";
+import { UserEvents } from "../user/mod";
+import { save } from "@tauri-apps/api/dialog";
 
 export const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -19,6 +21,9 @@ export const Canvas = () => {
   const [materialLayer, setMaterialLayer] = useState<HTMLImageElement | null>(
     null
   );
+
+  const [urlHeightmapLayer, setUrlHeightmapLayer] = useState("");
+  const [urlMaterialLayer, setUrlMaterialLayer] = useState("");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -71,8 +76,10 @@ export const Canvas = () => {
     img.src = context.canvas.toDataURL();
     if (selectedLayer == CanvasLayer.Heightmap) {
       setHeightmapLayer(img);
+      setUrlHeightmapLayer(context.canvas.toDataURL());
     } else if (selectedLayer == CanvasLayer.Material) {
       setMaterialLayer(img);
+      setUrlMaterialLayer(context.canvas.toDataURL());
     }
   };
 
@@ -85,9 +92,18 @@ export const Canvas = () => {
   };
 
   const saveImage = () => {
-    const url = canvasRef!.current!.toDataURL("image/png");
-    invoke("export", { image: url });
+    console.log(urlHeightmapLayer);
+    console.log(urlMaterialLayer);
+    invoke("export", {
+      heightmap: urlHeightmapLayer,
+      material: urlMaterialLayer,
+      materialDictionary: JSON.stringify(UserProps.I.colorMatch),
+    });
   };
+
+  UserEvents.exportEvent.listen(() => {
+    saveImage();
+  }, "saveImage");
 
   const switchLayer = () => {
     const layer =
@@ -95,6 +111,10 @@ export const Canvas = () => {
         ? CanvasLayer.Material
         : CanvasLayer.Heightmap;
     setSelectedLayer(layer);
+
+    UserProps.I.layer = layer;
+
+    context!.globalCompositeOperation = "source-over";
     context?.drawImage(
       layer == CanvasLayer.Material ? materialLayer! : heightmapLayer!,
       0,
